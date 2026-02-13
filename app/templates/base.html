@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}PropManager Pro{% endblock %}</title>
+    <link rel="stylesheet" href="/static/css/style.css">
+    <script>
+        // Apply theme immediately to prevent FOUC
+        (function () {
+            const theme = localStorage.getItem('app-theme') || 'dark-midnight';
+            document.documentElement.setAttribute('data-theme', theme);
+        })();
+    </script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+    {% block head %}{% endblock %}
+</head>
+
+<body>
+    <div class="app-layout">
+        <!-- Sidebar -->
+        <aside class="sidebar" id="sidebar">
+            <div class="sidebar-brand">
+                <div class="logo">P</div>
+                <div>
+                    <h1 style="color:white">PropManager <span>Pro</span></h1>
+                </div>
+            </div>
+            <nav class="sidebar-nav">
+                <div class="nav-section">
+                    <div class="nav-section-title">Main</div>
+                    <a href="/dashboard" class="nav-item {% if active_page == 'dashboard' %}active{% endif %}"
+                        id="nav-dashboard">
+                        <span class="icon">📊</span><span>Dashboard</span>
+                    </a>
+                </div>
+                <div class="nav-section">
+                    <div class="nav-section-title">Management</div>
+                    <a href="/properties" class="nav-item {% if active_page == 'properties' %}active{% endif %}"
+                        id="nav-properties">
+                        <span class="icon">🏢</span><span>Properties</span>
+                    </a>
+                    <a href="/tenants" class="nav-item {% if active_page == 'tenants' %}active{% endif %}"
+                        id="nav-tenants">
+                        <span class="icon">👥</span><span>Tenants</span>
+                    </a>
+                    <a href="/owners" class="nav-item {% if active_page == 'owners' %}active{% endif %}"
+                        id="nav-owners">
+                        <span class="icon">👑</span><span>Owners</span>
+                    </a>
+                    <a href="/leases" class="nav-item {% if active_page == 'leases' %}active{% endif %}"
+                        id="nav-leases">
+                        <span class="icon">📋</span><span>Leases</span>
+                    </a>
+                    <a href="/crm" class="nav-item {% if active_page == 'crm' %}active{% endif %}" id="nav-crm">
+                        <span class="icon">💬</span><span>CRM</span>
+                    </a>
+                    <a href="/marketing" class="nav-item {% if active_page == 'marketing' %}active{% endif %}"
+                        id="nav-marketing">
+                        <span class="icon">📢</span><span>Marketing</span>
+                    </a>
+                </div>
+                <div class="nav-section">
+                    <div class="nav-section-title">Finance</div>
+                    <a href="/invoices" class="nav-item {% if active_page == 'invoices' %}active{% endif %}"
+                        id="nav-invoices">
+                        <span class="icon">💰</span><span>Invoices</span>
+                    </a>
+                    <a href="/accounting" class="nav-item {% if active_page == 'accounting' %}active{% endif %}"
+                        id="nav-accounting">
+                        <span class="icon">📒</span><span>Accounting</span>
+                    </a>
+                </div>
+                <div class="nav-section">
+                    <div class="nav-section-title">Operations</div>
+                    <a href="/assets" class="nav-item {% if active_page == 'assets' %}active{% endif %}"
+                        id="nav-assets">
+                        <span class="icon">📦</span><span>Assets</span>
+                    </a>
+                    <a href="/utilities" class="nav-item {% if active_page == 'utilities' %}active{% endif %}"
+                        id="nav-utilities">
+                        <span class="icon">⚡</span><span>Utilities</span>
+                    </a>
+                    <a href="/maintenance" class="nav-item {% if active_page == 'maintenance' %}active{% endif %}"
+                        id="nav-maintenance">
+                        <span class="icon">🔧</span><span>Maintenance</span>
+                    </a>
+                    <a href="/compliance" class="nav-item {% if active_page == 'compliance' %}active{% endif %}"
+                        id="nav-compliance">
+                        <span class="icon">✅</span><span>Compliance</span>
+                    </a>
+                    <a href="/workflow" class="nav-item {% if active_page == 'workflow' %}active{% endif %}"
+                        id="nav-workflow">
+                        <span class="icon">⚡</span><span>Workflow</span>
+                    </a>
+                    <a href="/reports" class="nav-item {% if active_page == 'reports' %}active{% endif %}"
+                        id="nav-reports">
+                        <span class="icon">📈</span><span>Reports</span>
+                    </a>
+                </div>
+                {% if role.id == 1 %}
+                <div class="nav-section">
+                    <div class="nav-section-title">System</div>
+                    <a href="/users" class="nav-item {% if active_page == 'users' %}active{% endif %}" id="nav-users">
+                        <span class="icon">👤</span><span>Users</span>
+                    </a>
+                    <a href="/roles" class="nav-item {% if active_page == 'roles' %}active{% endif %}" id="nav-roles">
+                        <span class="icon">🔐</span><span>Roles</span>
+                    </a>
+                    <a href="/settings" class="nav-item {% if active_page == 'settings' %}active{% endif %}"
+                        id="nav-settings">
+                        <span class="icon">⚙️</span><span>Settings</span>
+                    </a>
+                    <a href="/execution-logs" class="nav-item">
+                        <span class="icon">📜</span><span>Execution Logs</span>
+                    </a>
+                    <a href="/workflow/scheduler" class="nav-item {% if active_page == 'scheduler' %}active{% endif %}"
+                        id="nav-scheduler">
+                        <span class="icon">⏰</span><span>Job Scheduler</span>
+                    </a>
+                </div>
+                {% endif %}
+                <div class="nav-section"
+                    style="margin-top:auto; border-top: 1px solid var(--border); padding-top: 16px;">
+                    <a href="/api/auth/logout" class="nav-item" style="color: var(--danger);">
+                        <span class="icon">🚪</span><span>Logout</span>
+                    </a>
+                </div>
+            </nav>
+            <div class="sidebar-footer">
+                <div class="user-info" onclick="document.getElementById('userMenu').classList.toggle('active')">
+                    <div class="user-avatar">{{ user.full_name[0] if user.full_name else 'U' }}</div>
+                    <div class="user-details">
+                        <div class="name">{{ user.full_name or user.username }}</div>
+                        <div class="role-badge">{{ role.role_name if role else 'User' }}</div>
+                    </div>
+                </div>
+                <div id="userMenu" class="user-menu-popup">
+                    <a href="#" onclick="logout()" class="nav-item"><span class="icon">🚪</span><span>Logout</span></a>
+                </div>
+            </div>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <header class="topbar">
+                <div class="topbar-left">
+                    <button class="icon-btn" onclick="document.getElementById('sidebar').classList.toggle('open')"
+                        style="display:none" id="menuToggle">☰</button>
+                    <h2>{% block page_title %}Dashboard{% endblock %}</h2>
+                </div>
+                <div class="topbar-right">
+                    <div class="search-box">
+                        <span>🔍</span>
+                        <input type="text" placeholder="Search..." id="globalSearch">
+                    </div>
+                    <div class="icon-btn" title="Notifications">🔔<span class="badge" id="notifBadge"
+                            style="display:none">0</span></div>
+                </div>
+            </header>
+            <div class="page-content">
+                {% block content %}{% endblock %}
+            </div>
+        </main>
+    </div>
+
+    <div class="toast-container" id="toastContainer"></div>
+
+    <script>
+        function showToast(message, type = 'success') {
+            const container = document.getElementById('toastContainer');
+            const toast = document.createElement('div');
+            toast.className = `toast ${type}`;
+            toast.innerHTML = `<span>${type === 'success' ? '✅' : type === 'error' ? '❌' : '⚠️'}</span> ${message}`;
+            container.appendChild(toast);
+            setTimeout(() => toast.remove(), 4000);
+        }
+
+        async function logout() {
+            window.location.href = '/api/auth/logout';
+        }
+
+        async function apiFetch(url, options = {}) {
+            const defaults = { headers: { 'Content-Type': 'application/json' } };
+            const resp = await fetch(url, { ...defaults, ...options });
+            if (resp.status === 401) { window.location.href = '/login'; return null; }
+            if (!resp.ok) {
+                const err = await resp.json().catch(() => ({}));
+                throw new Error(err.detail || 'Request failed');
+            }
+            return resp.json();
+        }
+
+        function formatCurrency(val, currency = 'USD') {
+            return new Intl.NumberFormat('en-US', { style: 'currency', currency }).format(val || 0);
+        }
+
+        function formatDate(d) {
+            if (!d) return '-';
+            return new Date(d).toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' });
+        }
+
+        function statusBadge(status) {
+            const map = {
+                'Active': 'success', 'Occupied': 'success', 'Paid': 'success', 'Completed': 'success',
+                'Vacant': 'danger', 'Overdue': 'danger', 'Cancelled': 'danger', 'Terminated': 'danger',
+                'Draft': 'neutral', 'New': 'info', 'Pending': 'warning', 'InProgress': 'info',
+                'Posted': 'purple', 'Reserved': 'warning', 'UnderMaintenance': 'info',
+                'PartiallyPaid': 'warning', 'Expired': 'neutral', 'Suspended': 'warning',
+            };
+            return `<span class="badge badge-${map[status] || 'neutral'}">${status}</span>`;
+        }
+    </script>
+    {% block scripts %}{% endblock %}
+</body>
+
+</html>
